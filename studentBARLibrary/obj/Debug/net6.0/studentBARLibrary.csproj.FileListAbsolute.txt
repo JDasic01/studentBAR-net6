@@ -1,0 +1,12 @@
+C:\Users\jdasi\Desktop\studentBARapp\studentBARLibrary\bin\Debug\net6.0\studentBARLibrary.deps.json
+C:\Users\jdasi\Desktop\studentBARapp\studentBARLibrary\bin\Debug\net6.0\studentBARLibrary.dll
+C:\Users\jdasi\Desktop\studentBARapp\studentBARLibrary\bin\Debug\net6.0\studentBARLibrary.pdb
+C:\Users\jdasi\Desktop\studentBARapp\studentBARLibrary\obj\Debug\net6.0\studentBARLibrary.csproj.AssemblyReference.cache
+C:\Users\jdasi\Desktop\studentBARapp\studentBARLibrary\obj\Debug\net6.0\studentBARLibrary.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\jdasi\Desktop\studentBARapp\studentBARLibrary\obj\Debug\net6.0\studentBARLibrary.AssemblyInfoInputs.cache
+C:\Users\jdasi\Desktop\studentBARapp\studentBARLibrary\obj\Debug\net6.0\studentBARLibrary.AssemblyInfo.cs
+C:\Users\jdasi\Desktop\studentBARapp\studentBARLibrary\obj\Debug\net6.0\studentBARLibrary.csproj.CoreCompileInputs.cache
+C:\Users\jdasi\Desktop\studentBARapp\studentBARLibrary\obj\Debug\net6.0\studentBARLibrary.dll
+C:\Users\jdasi\Desktop\studentBARapp\studentBARLibrary\obj\Debug\net6.0\refint\studentBARLibrary.dll
+C:\Users\jdasi\Desktop\studentBARapp\studentBARLibrary\obj\Debug\net6.0\studentBARLibrary.pdb
+C:\Users\jdasi\Desktop\studentBARapp\studentBARLibrary\obj\Debug\net6.0\ref\studentBARLibrary.dll
