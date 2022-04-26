@@ -9,10 +9,11 @@ public static class RegisterServices
         builder.Services.AddServerSideBlazor();
         builder.Services.AddMemoryCache();
 
-        //builder.Services.AddSingleton<IDbConnection, DbConnection>();
-        //builder.Services.AddSingleton<IfacultyData, MongofacultyData>();
-        //builder.Services.AddSingleton<IStatusData, MongoStatusData>();
-        //builder.Services.AddSingleton<IpostData, MongopostData>();
-        //builder.Services.AddSingleton<IUserData, MongoUserData>();
+        builder.Services.AddSingleton<IDbConnection, DbConnection>();
+        builder.Services.AddSingleton<IFacultyData, MongoFacultyData>();
+        builder.Services.AddSingleton<IUniversityData, MongoUniversityData>();
+        builder.Services.AddSingleton<IPostData, MongoPostData>();
+        builder.Services.AddSingleton<IUserData, MongoUserData>();
+        builder.Services.AddSingleton<ICourseData, MongoCourseData>();
     }
 }

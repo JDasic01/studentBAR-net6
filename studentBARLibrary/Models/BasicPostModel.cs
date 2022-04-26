@@ -13,6 +13,6 @@ public class BasicPostModel
     public BasicPostModel(PostModel post)
     {
         Id = post.Id;
-        Post = post.post;
+        Post = post.Post;
     }
 }

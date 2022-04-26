@@ -8,4 +8,6 @@ public class UniversityModel
     public string UniversityName { get; set; }
     public string UniversityPlace { get; set; }
     public bool Archived { get; set; } = false;
+    public BasicUserModel Author { get; set; }
+    public List<BasicFacultyModel> Faculty { get; set; }
 }

@@ -1,0 +1,202 @@
+﻿@page "/SampleData"
+@inject IFacultyData facultyData
+@inject IUniversityData universityData
+@inject IUserData userData
+@inject ICourseData courseData
+@inject IPostData postData
+
+
+
+<h3>SampleData</h3>
+
+@if(facultiesCreated)
+{
+    <h4>faculties created</h4>
+}
+else
+{
+    <button class="btn btn-primary" @onclick="CreateFaculties">Create faculties</button>
+}
+
+@if(universitiesCreated)
+{
+    <h4>Universities created</h4>
+}
+else
+{
+    <button class="btn btn-primary" @onclick="CreateUniversities">Create universities</button>
+}
+
+<button class="btn btn-primary" @onclick="GenerateSampleData">Sample data</button>
+<button class="btn btn-primary" @onclick="CreateUser">User</button>
+
+@code {
+    private bool facultiesCreated = false;
+    private bool universitiesCreated = false;
+
+    private async Task GenerateSampleData()
+    {
+
+        var foundUser = await userData.GetUserFromAuthentication("12345");
+        var faculties = await facultyData.GetAllFaculties();
+        var universities = await universityData.GetAllUniversities();
+
+        HashSet<string> votes = new();
+        votes.Add("1");
+        votes.Add("2");
+        votes.Add("3");
+
+        PostModel post = new()
+            {
+                Author = new BasicUserModel(foundUser),
+                Faculty = faculties[0],
+                Post = "Prva objava",
+                Description = "Opis prve objave"
+            };
+        await postData.CreatePost(post);
+
+        post = new()
+            {
+                Author = new BasicUserModel(foundUser),
+                Faculty = faculties[1],
+                Post = "Druga objava",
+                Description = "Opis druge objave"
+            };
+        await postData.CreatePost(post);
+
+        votes.Add("4");
+
+        post = new()
+            {
+                Author = new BasicUserModel(foundUser),
+                Faculty = faculties[2],
+                Post = "Treca objava",
+                Description = "Opis trece objave"
+            };
+        await postData.CreatePost(post);
+    }
+
+    private async Task CreateUser()
+    {
+        UserModel user = new()
+            {
+                FirstName = "Jelena",
+                LastName = "Dasic",
+                EmailAddress = "jdasic@test.com",
+                DisplayName = "ProbaJelena",
+                ObjectIdentifier = "12345"
+            };
+        await userData.CreateUser(user);
+
+        user = new()
+            {
+                FirstName = "Nera",
+                LastName = "Dasic",
+                EmailAddress = "ndasic@test.com",
+                DisplayName = "ProbaNera",
+                ObjectIdentifier = "52342"
+            };
+        await userData.CreateUser(user);
+    }
+
+    private async Task CreateFaculties()
+    {
+       UserModel user = new()
+            {
+                FirstName = "Lana",
+                LastName = "Dasic",
+                EmailAddress = "ldasic@test.com",
+                DisplayName = "ProbaLana",
+                ObjectIdentifier = "54321"
+            };
+        await userData.CreateUser(user);
+        var foundUser = await userData.GetUserFromAuthentication("54321");
+        var faculties = await facultyData.GetAllFaculties();
+        if(faculties?.Count>0)
+        {
+            return;
+        }
+
+        FacultyModel faculty = new()
+            {
+                Author = new BasicUserModel(foundUser),
+                FacultyName = "Fakultet informatike i digitalne tehnologije"
+            };
+        await facultyData.CreateFaculty(faculty);
+
+        faculty = new()
+            {
+                Author = new BasicUserModel(foundUser),
+                FacultyName = "Fakultet fizike"
+            };
+        await facultyData.CreateFaculty(faculty);
+
+        faculty = new()
+            {
+                Author = new BasicUserModel(foundUser),
+                FacultyName = "Prirodoslovno matematički fakultet"
+            };
+        await facultyData.CreateFaculty(faculty);
+
+        faculty = new()
+            {
+                Author = new BasicUserModel(foundUser),
+                FacultyName = "Filozofski fakultet"
+            };
+        await facultyData.CreateFaculty(faculty);
+
+        faculty = new()
+            {
+                Author = new BasicUserModel(foundUser),
+                FacultyName = "FMTU"
+            };
+        await facultyData.CreateFaculty(faculty);
+
+        facultiesCreated = true;
+    }
+
+    private async Task CreateUniversities()
+    {
+        var foundUser = await userData.GetUserFromAuthentication("52342");
+        var universities = await universityData.GetAllUniversities();
+
+        if(universities?.Count>0)
+        {
+            return;
+        }
+
+        UniversityModel uni = new()
+            {
+                Author = new BasicUserModel(foundUser),
+                UniversityName="Sveuciliste u Rijeci",
+                UniversityPlace="Rijeka",
+            };
+        await universityData.CreateUniversity(uni);
+
+        uni = new()
+            {
+                Author = new BasicUserModel(foundUser),
+                UniversityName="Sveuciliste u Zagrebu",
+                UniversityPlace="Zagreb"
+            };
+        await universityData.CreateUniversity(uni);
+
+        uni = new()
+            {
+                Author = new BasicUserModel(foundUser),
+                UniversityName="Sveuciliste u Dubrovniku",
+                UniversityPlace="Dubrovnik"
+            };
+        await universityData.CreateUniversity(uni);
+
+        uni = new()
+            {
+                Author = new BasicUserModel(foundUser),
+                UniversityName="Sveuciliste Juraja Dobrile",
+                UniversityPlace="Pula"
+            };
+        await universityData.CreateUniversity(uni);
+
+        universitiesCreated = true;
+    }
+}

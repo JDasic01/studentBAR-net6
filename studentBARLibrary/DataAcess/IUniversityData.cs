@@ -3,8 +3,8 @@ namespace studentBARLibrary.DataAcess
 {
     public interface IUniversityData
     {
-        Task CreateSuggestion(UniversityModel university);
-        Task<List<UniversityModel>> GetAllSuggestions();
-        Task UpdateSuggestion(UniversityModel university);
+        Task CreateUniversity(UniversityModel university);
+        Task<List<UniversityModel>> GetAllUniversities();
+        Task UpdateUniversity(UniversityModel university);
     }
 }

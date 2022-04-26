@@ -18,7 +18,7 @@ public class MongoUniversityData : IUniversityData
         _universities = db.UniversityCollection;
     }
 
-    public async Task<List<UniversityModel>> GetAllSuggestions()
+    public async Task<List<UniversityModel>> GetAllUniversities()
     {
         var output = _cache.Get<List<UniversityModel>>(CacheName);
         if (output is null)
@@ -32,13 +32,13 @@ public class MongoUniversityData : IUniversityData
     }
 
 
-    public async Task UpdateSuggestion(UniversityModel university)
+    public async Task UpdateUniversity(UniversityModel university)
     {
         await _universities.ReplaceOneAsync(s => s.UniversityId == university.UniversityId, university);
         _cache.Remove(CacheName);
     }
 
-    public async Task CreateSuggestion(UniversityModel university)
+    public async Task CreateUniversity(UniversityModel university)
     {
         var client = _db.Client;
         using var session = await client.StartSessionAsync();
@@ -52,7 +52,7 @@ public class MongoUniversityData : IUniversityData
             await universitysInTransactions.InsertOneAsync(university);
 
             var usersInTransactions = db.GetCollection<UserModel>(_db.UserCollectionName);
-            var user = await _userData.GetUser(university.UniversityId);
+            var user = await _userData.GetUser(university.Author.Id);
             user.AuthoredUniversities.Add(new BasicUniversityModel(university));
             await usersInTransactions.ReplaceOneAsync(u => u.Id == user.Id, user);
 
@@ -63,5 +63,20 @@ public class MongoUniversityData : IUniversityData
             await session.AbortTransactionAsync();
             throw;
         }
+    }
+
+    public Task CreateSuggestion(UniversityModel university)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<List<UniversityModel>> GetAllSuggestions()
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task UpdateSuggestion(UniversityModel university)
+    {
+        throw new NotImplementedException();
     }
 }

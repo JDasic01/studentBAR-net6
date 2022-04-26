@@ -42,7 +42,6 @@ public class MongoFacultyData : IFacultyData
     {
         var client = _db.Client;
         using var session = await client.StartSessionAsync();
-
         session.StartTransaction();
 
         try
@@ -52,7 +51,7 @@ public class MongoFacultyData : IFacultyData
             await FacultysInTransactions.InsertOneAsync(faculty);
 
             var usersInTransactions = db.GetCollection<UserModel>(_db.UserCollectionName);
-            var user = await _userData.GetUser(faculty.FacultyId);
+            var user = await _userData.GetUser(faculty.Author.Id);
             user.AuthoredFaculties.Add(new BasicFacultyModel(faculty));
             await usersInTransactions.ReplaceOneAsync(u => u.Id == user.Id, user);
 
@@ -65,13 +64,4 @@ public class MongoFacultyData : IFacultyData
         }
     }
 
-    public Task Createfaculty(FacultyModel faculty)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<List<FacultyModel>> GetAllCategories()
-    {
-        throw new NotImplementedException();
-    }
 }
