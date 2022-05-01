@@ -1,13 +1,14 @@
 ﻿namespace studentBARLibrary.Models;
 
-public class FacultyModel
+public class AssignmentModel
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    public string FacultyId { get; set; }
-    public string FacultyName { get; set; }
-    public string UniversityId { get; set; }
+    public string Id { get; set; }
+    public string Name { get; set; }
+    public int Points { get; set; }
     public BasicUserModel Author { get; set; }
+    public BasicCourseModel Course { get; set; }
     public bool Archived { get; set; } = false;
     public HashSet<string> UsersSaved { get; set; } = new();
 }

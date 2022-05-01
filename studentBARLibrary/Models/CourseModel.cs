@@ -9,6 +9,7 @@ public class CourseModel
     public string CourseProfessor { get; set; }
     public string CourseAssistant { get; set; }
     public string CourseYear { get; set; }
-    public List<CourseModel> Assignments { get; set; } = new();
+    public List<AssignmentModel> Assignments { get; set; } = new();
     public bool Archived { get; set; } = false;
+    public HashSet<string> UsersSaved { get; set; } = new();
 }

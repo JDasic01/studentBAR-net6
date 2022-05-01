@@ -10,4 +10,5 @@ public class UniversityModel
     public bool Archived { get; set; } = false;
     public BasicUserModel Author { get; set; }
     public List<BasicFacultyModel> Faculty { get; set; }
+    public HashSet<string> UsersSaved { get; set; } = new();
 }
