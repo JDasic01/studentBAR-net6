@@ -1,0 +1,80 @@
+﻿@page "/CreateFaculty"
+@using studentBARUI.Models
+@using studentBARUI.Components
+@inject IFacultyData facultyData
+@inject IUserData userData
+@inject IUniversityData universityData
+@inject NavigationManager navManager
+
+<h1>Make a Faculty</h1>
+
+<div>
+    <div>
+        <div>
+            <button @onclick="ClosePage"></button>
+        </div>
+        @if(universities is not null)
+        {
+            
+        }
+        <EditForm Model="faculty" OnValidSubmit="CreateFaculty">
+            <DataAnnotationsValidator  />
+            <ValidationSummary/>
+            <div>
+                <label for="faculty-text">Faculty</label>
+                <div>Name of Faculty</div>
+                <InputText id="faculty-text" @bind-Value="faculty.Name"/>
+            </div>
+            <div>
+                <label for="university">University</label>
+                <div>Choose one uni</div>
+                <div>
+                </div>
+            </div>
+            <div>
+                <label for="description">Description</label>
+                <div>Describe post</div>
+                <InputTextArea id="description" @bind-Value="post.Description"/>
+            </div>
+            <div>
+                <button type="submit">Suggest</button>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    private CreateFacultyModel faculty = new();
+    private List<UniversityModel> universities;
+    private UserModel loggedInUser;
+
+    protected async override Task OnInitializedAsync()
+    {
+        universities = await universityData.GetAllUniversities();
+
+        // Replace with user lookup
+        loggedInUser = await userData.GetUserFromAuthentication("abc-123");
+    }
+
+    private void ClosePage()
+    {
+        navManager.NavigateTo("/");
+    }
+
+    private async Task CreateFaculty()
+    {
+        FacultyModel f = new();
+        f.FacultyName = faculty.FacultyName;
+        f.Author = new BasicUserModel(loggedInUser);
+
+        if(f.University is null)
+        {
+            faculty.UniversityId = "";
+            return;
+        }
+
+        await facultyData.CreatePost(p);
+        post = new();
+        ClosePage();
+    }
+}

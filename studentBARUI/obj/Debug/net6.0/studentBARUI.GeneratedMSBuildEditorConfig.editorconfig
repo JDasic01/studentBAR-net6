@@ -23,6 +23,18 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ291cnNlLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/jdasi/Desktop/studentBAR/studentBARUI/Pages/CreateFaculty.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ3JlYXRlRmFjdWx0eS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jdasi/Desktop/studentBAR/studentBARUI/Pages/CreateUniversity.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ3JlYXRlVW5pdmVyc2l0eS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jdasi/Desktop/studentBAR/studentBARUI/Pages/Details.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRGV0YWlscy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/jdasi/Desktop/studentBAR/studentBARUI/Pages/Faculty.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRmFjdWx0eS5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 

@@ -1,1 +1,82 @@
 ﻿@page "/Post"
+@using studentBARUI.Models
+@using studentBARUI.Components
+@inject IFacultyData facultyData
+@inject IUserData userData
+@inject IPostData postData
+@inject NavigationManager navManager
+
+<h1>Make a post</h1>
+
+<div>
+    <div>
+        <div>
+            <button @onclick="ClosePage"></button>
+        </div>
+        @if(faculties is not null)
+        {
+            
+        }
+        <EditForm Model="post" OnValidSubmit="CreatePost">
+            <DataAnnotationsValidator  />
+            <ValidationSummary/>
+            <div>
+                <label for="post-text">Suggestion</label>
+                <div>Focus on the topic or technology you want to learn about</div>
+                <InputText id="post-text" @bind-Value="post.Suggestion"/>
+            </div>
+            <div>
+                <label for="category">Category</label>
+                <div>Choose one category</div>
+                <div>
+                </div>
+            </div>
+            <div>
+                <label for="description">Description</label>
+                <div>Describe post</div>
+                <InputTextArea id="description" @bind-Value="post.Description"/>
+            </div>
+            <div>
+                <button type="submit">Suggest</button>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    private CreatePostModel post = new();
+    private List<FacultyModel> faculties;
+    private UserModel loggedInUser;
+
+    protected async override Task OnInitializedAsync()
+    {
+        faculties = await facultyData.GetAllFaculties();
+
+        // Replace with user lookup
+        loggedInUser = await userData.GetUserFromAuthentication("abc-123");
+    }
+
+    private void ClosePage()
+    {
+        navManager.NavigateTo("/");
+    }
+
+    private async Task CreatePost()
+    {
+        PostModel p = new();
+        p.Post = post.Suggestion;
+        p.Description = post.Description;
+        p.Author = new BasicUserModel(loggedInUser);
+        p.Faculty = faculties.Where(f=>f.FacultyId==post.FacultyId).FirstOrDefault();
+
+        if(p.Faculty is null)
+        {
+            post.FacultyId = "";
+            return;
+        }
+
+        await postData.CreatePost(p);
+        post = new();
+        ClosePage();
+    }
+}
