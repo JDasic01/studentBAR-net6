@@ -11,5 +11,4 @@ public class CreateFacultyModel
     [MinLength(1)]
     [Display(Name = "University")]
     public string UniversityId { get; set; }
-    [MaxLength(500)]
 }

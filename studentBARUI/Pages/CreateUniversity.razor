@@ -1,5 +1,55 @@
-﻿<h3>CreateUniversity</h3>
+﻿@page "/CreateUniversity"
+@using studentBARUI.Models
+@using studentBARUI.Components
+@inject IUserData userData
+@inject IUniversityData universityData
+@inject NavigationManager navManager
+
+<h1>Make a Faculty</h1>
+
+<div>
+    <div>
+        <div>
+            <button @onclick="ClosePage"></button>
+        </div>
+        <EditForm Model="uni" OnValidSubmit="CreateUni">
+            <DataAnnotationsValidator  />
+            <ValidationSummary/>
+            <div>
+                <label for="university-text">University</label>
+                <div>Name of University</div>
+                <InputText id="university-text" @bind-Value="uni.University"/>
+            </div>
+            <div> 
+                <button type="submit">Suggest</button>
+            </div>
+        </EditForm>
+    </div>
+</div>
 
 @code {
+    private CreateUniversityModel uni = new();
+    private UserModel loggedInUser;
 
+    protected async override Task OnInitializedAsync()
+    {
+        // Replace with user lookup
+        loggedInUser = await userData.GetUserFromAuthentication("abc-123");
+    }
+
+    private void ClosePage()
+    {
+        navManager.NavigateTo("/");
+    }
+
+    private async Task CreateUni()
+    {
+        UniversityModel u = new();
+        u.UniversityName = uni.University;
+        u.Author = new BasicUserModel(loggedInUser);
+
+        await universityData.CreateUniversity(u);
+        uni = new();
+        ClosePage();
+    }
 }

@@ -6,7 +6,7 @@ public class FacultyModel
     [BsonRepresentation(BsonType.ObjectId)]
     public string FacultyId { get; set; }
     public string FacultyName { get; set; }
-    public BasicUniversityModel University { get; set; }
+    public UniversityModel University { get; set; }
     public string UniversityId { get; set; }
     public BasicUserModel Author { get; set; }
     public bool Archived { get; set; } = false;

@@ -1,1 +1,218 @@
 ﻿@page "/"
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+
+@inject IUniversityData universityData
+@inject IPostData postData
+@inject IFacultyData facultyData
+@inject IUserData userData
+@inject NavigationManager navManager
+@inject ProtectedSessionStorage sessionStorage
+
+<h1>Training Suggestions</h1>
+<div>
+    <button>Suggest</button>
+</div>
+
+<div>
+    <div>@posts?.Count Posts</div>
+    <div>
+        <button @onclick="(()=>OrderByNew(true))">New</button>
+        <button @onclick="(()=>OrderByNew(false))">Popular</button>
+    </div>
+    <div>
+        <input type="text" placeholder="Search" 
+        aria-label="Search box" 
+        @oninput="((txt)=> OnSearchInput((string)txt.Value))"/>
+    </div>
+</div>
+
+<div>
+    <div>
+        @if(posts is not null)
+        {
+            <Virtualize Items="@posts" Context="s" OverscanCount="10">
+                <div>
+                    <div>
+                        <div>@GetUpvoteTopText(s)</div>
+                        <span class="oi oi-caret-top"></span>
+                        <div>@GetUpvoteBottomText(s)</div>
+                    </div>
+                    <div>
+                        <div @onclick="(()=>OpenDetails(s))">
+                            @s.Description
+                        </div>
+                        <div>
+                            <div @onclick="(()=>OpenDetails(s))">
+                                @s.Faculty?.FacultyName
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </Virtualize>
+        }
+    </div>
+    <div>
+        @if(faculties is not null)
+        {
+            <div>
+                <span>Category</span>
+                <div @onclick="(()=>OnCategoryClick())">All</div>
+                @foreach(var c in universities)
+                {
+                    <div @onclick="(()=>OnCategoryClick(c.UniversityName))">@c.UniversityName</div>
+                }
+            </div>
+        }
+        @if(faculties is not null)
+        {
+            <div>
+                <span>Status</span>
+                <div @onclick="(()=>OnStatusClick())">All</div>
+                @foreach(var s in faculties)
+                {
+                    <div @onclick="(()=>OnStatusClick(s.FacultyName))">@s.FacultyName</div>
+                }
+            </div>            
+        }
+    </div>
+</div>
+
+
+@code{
+    private List<PostModel> posts;
+    private List<FacultyModel> faculties;
+    private List<UniversityModel> universities;
+
+    private string selectedFaculty = "All";
+    private string selectedUniversity = "All";
+    private string searchText = "";
+    bool isSortedByNew = true;
+
+    protected async override Task OnInitializedAsync()
+    {
+        universities = await universityData.GetAllUniversities();
+        posts = await postData.GetAllPosts();
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(firstRender)
+        {
+            await LoadFilterState();
+            await FilterSuggestions();
+            StateHasChanged();
+        }
+    }
+
+    private async Task LoadFilterState()
+    {
+        var stringResults = await sessionStorage.GetAsync<string>(nameof(selectedFaculty));
+        selectedFaculty = stringResults.Success ? stringResults.Value : "All";
+
+        stringResults = await sessionStorage.GetAsync<string>(nameof(selectedUniversity));
+        selectedUniversity = stringResults.Success ? stringResults.Value : "All";
+
+        stringResults = await sessionStorage.GetAsync<string>(nameof(searchText));
+        searchText = stringResults.Success ? stringResults.Value : "";
+
+        var boolResults = await sessionStorage.GetAsync<bool>(nameof(isSortedByNew));
+        isSortedByNew = boolResults.Success ? boolResults.Value : true;
+    }
+
+    private async Task SaveFilterState()
+    {
+        await sessionStorage.SetAsync(nameof(selectedFaculty), selectedFaculty);
+        await sessionStorage.SetAsync(nameof(selectedUniversity), selectedUniversity);
+        await sessionStorage.SetAsync(nameof(searchText), searchText);
+        await sessionStorage.SetAsync(nameof(isSortedByNew), isSortedByNew);
+    }
+
+    private async Task FilterSuggestions()
+    {
+        var output = await postData.GetAllPosts();
+
+        if(selectedFaculty != "All")
+        {
+            output = output.Where(s => s.Faculty?.FacultyName == selectedFaculty).ToList();
+        }
+
+        if(selectedUniversity != "All")
+        {
+            output = output.Where(s => s.University?.UniversityName == selectedFaculty).ToList();
+        }
+
+        if(string.IsNullOrWhiteSpace(searchText)==false)
+        {
+            output = output.Where(
+                s => s.Faculty.FacultyName.Contains(searchText, StringComparison.InvariantCultureIgnoreCase) ||
+                s.Description.Contains(searchText, StringComparison.InvariantCultureIgnoreCase)
+            ).ToList();
+        }
+
+        if(isSortedByNew)
+        {
+            output = output.OrderByDescending(s => s.DateCreated).ToList();
+        }
+        else
+        {
+            output = output.OrderByDescending(s => s.UserVotes.Count)
+                           .ThenByDescending(s => s.DateCreated).ToList();
+        }
+
+        posts = output;
+        await SaveFilterState();
+    }
+
+    private async Task OrderByNew(bool isNew)
+    {
+        isSortedByNew = isNew;
+        await FilterSuggestions();
+    }
+
+    private async Task OnSearchInput(string searchInput)
+    {
+        selectedFaculty = searchInput;
+        await FilterSuggestions();
+    }
+
+    private async Task OnCategoryClick(string category = "All")
+    {
+        selectedFaculty = category;
+        await FilterSuggestions();
+    }
+
+    private async Task OnStatusClick(string status = "All")
+    {
+        selectedUniversity = status;
+        await FilterSuggestions();
+    }
+
+    private string GetUpvoteTopText(PostModel post)
+    {
+        if(post.UserVotes?.Count>0)
+        {
+            return post.UserVotes.Count.ToString("00");
+        }
+        else
+        {
+            return "Click to";
+        }
+    }
+
+    private string GetUpvoteBottomText(PostModel post)
+    {
+        if(post.UserVotes?.Count>1)
+        {
+            return "Upvotes";
+        }
+        else
+        {
+            return "Upvote";
+        }
+    }
+
+    private void OpenDetails(PostModel post)
+    {
+        navManager.NavigateTo($"/Details/{post.Id}");
+    }
+}

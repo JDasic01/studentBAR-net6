@@ -17,26 +17,30 @@
         {
             
         }
-        <EditForm Model="faculty" OnValidSubmit="CreateFaculty">
+        <EditForm Model="faculty" OnValidSubmit="CreateNewFaculty">
             <DataAnnotationsValidator  />
             <ValidationSummary/>
             <div>
                 <label for="faculty-text">Faculty</label>
                 <div>Name of Faculty</div>
-                <InputText id="faculty-text" @bind-Value="faculty.Name"/>
+                <InputText id="faculty-text" @bind-Value="faculty.FacultyName"/>
             </div>
             <div>
                 <label for="university">University</label>
                 <div>Choose one uni</div>
                 <div>
+                    @*<MyInputRadioGroup id="university" @bind-Value="faculty.UniversityId">*@
+                       @* @foreach(var u in universities)
+                        {
+                            <div>
+                                <InputRadio Value="@u.UniversityId" id="@u.UniversityId"/>
+                                <label for="u.UniversityId">@u.UniversityName - @u.UniversityPlace</label>
+                            </div>
+                        }*@
+                    @*</MyInputRadioGroup>*@
                 </div>
             </div>
-            <div>
-                <label for="description">Description</label>
-                <div>Describe post</div>
-                <InputTextArea id="description" @bind-Value="post.Description"/>
-            </div>
-            <div>
+            <div> 
                 <button type="submit">Suggest</button>
             </div>
         </EditForm>
@@ -61,11 +65,12 @@
         navManager.NavigateTo("/");
     }
 
-    private async Task CreateFaculty()
+    private async Task CreateNewFaculty()
     {
         FacultyModel f = new();
         f.FacultyName = faculty.FacultyName;
         f.Author = new BasicUserModel(loggedInUser);
+        f.University = universities.Where(u=>u.UniversityId==faculty.UniversityId).FirstOrDefault();
 
         if(f.University is null)
         {
@@ -73,8 +78,8 @@
             return;
         }
 
-        await facultyData.CreatePost(p);
-        post = new();
+        await facultyData.CreateFaculty(f);
+        faculty = new();
         ClosePage();
     }
 }
